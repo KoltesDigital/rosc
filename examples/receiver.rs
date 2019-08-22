@@ -1,6 +1,6 @@
-extern crate rosc;
+extern crate rosc_supercollider;
 
-use rosc::OscPacket;
+use rosc_supercollider::OscPacket;
 use std::env;
 use std::net::{SocketAddrV4, UdpSocket};
 use std::str::FromStr;
@@ -19,13 +19,13 @@ fn main() {
     let sock = UdpSocket::bind(addr).unwrap();
     println!("Listening to {}", addr);
 
-    let mut buf = [0u8; rosc::decoder::MTU];
+    let mut buf = [0u8; rosc_supercollider::decoder::MTU];
 
     loop {
         match sock.recv_from(&mut buf) {
             Ok((size, addr)) => {
                 println!("Received packet with size {} from: {}", size, addr);
-                let packet = rosc::decoder::decode(&buf[..size]).unwrap();
+                let packet = rosc_supercollider::decoder::decode(&buf[..size]).unwrap();
                 handle_packet(packet);
             }
             Err(e) => {

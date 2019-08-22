@@ -1,5 +1,5 @@
 use errors::OscError;
-use types::{OscBundle, OscMessage, OscPacket, OscType, Result};
+use types::{OscAddress, OscBundle, OscMessage, OscPacket, OscType, Result};
 
 use byteorder::{BigEndian, ByteOrder};
 
@@ -10,11 +10,11 @@ use byteorder::{BigEndian, ByteOrder};
 /// # Example
 ///
 /// ```
-/// use rosc::{OscPacket,OscMessage,OscType};
-/// use rosc::encoder;
+/// use rosc_supercollider::{OscAddress,OscPacket,OscMessage,OscType};
+/// use rosc_supercollider::encoder;
 ///
 /// let packet = OscPacket::Message(OscMessage{
-///         addr: "/greet/me".to_string(),
+///         addr: OscAddress::String("/greet/me".to_string()),
 ///         args: Some(vec![OscType::String("hi!".to_string())])
 ///     }
 /// );
@@ -30,7 +30,11 @@ pub fn encode(packet: &OscPacket) -> Result<Vec<u8>> {
 fn encode_message(msg: &OscMessage) -> Result<Vec<u8>> {
     let mut msg_bytes: Vec<u8> = Vec::new();
 
-    msg_bytes.extend(encode_string(msg.addr.clone()));
+    match msg.addr {
+        OscAddress::Int(i) => msg_bytes.extend(vec![0, 0, 0, i as u8]),
+        OscAddress::String(ref s) => msg_bytes.extend(encode_string(s.clone())),
+    }
+
     let mut type_tags: Vec<char> = vec![','];
     let mut arg_bytes: Vec<u8> = Vec::new();
 
@@ -184,7 +188,7 @@ fn pad_bytes(bytes: &mut Vec<u8>) {
 /// # Example
 ///
 /// ```
-/// use rosc::encoder;
+/// use rosc_supercollider::encoder;
 ///
 /// let pos: u64 = 10;
 /// assert_eq!(12u64, encoder::pad(pos))

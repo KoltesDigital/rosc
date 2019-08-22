@@ -1,10 +1,11 @@
 use encoder;
 use errors::OscError;
 use types::{
-    OscArray, OscBundle, OscColor, OscMessage, OscMidiMessage, OscPacket, OscType, Result,
+    OscAddress, OscArray, OscBundle, OscColor, OscMessage, OscMidiMessage, OscPacket, OscType,
+    Result,
 };
 
-use std::io::{BufRead, Read};
+use std::io::{BufRead, Read, Seek, SeekFrom};
 use std::{char, io};
 
 use byteorder::{BigEndian, ReadBytesExt};
@@ -21,16 +22,25 @@ pub fn decode(msg: &[u8]) -> Result<OscPacket> {
     }
 
     match msg[0] as char {
-        '/' => decode_message(msg),
         '#' => decode_bundle(msg),
-        _ => Err(OscError::BadPacket("Unknown message format.")),
+        _ => decode_message(msg),
     }
 }
 
 fn decode_message(msg: &[u8]) -> Result<OscPacket> {
     let mut cursor: io::Cursor<&[u8]> = io::Cursor::new(msg);
 
-    let addr: String = read_osc_string(&mut cursor)?;
+    let addr: OscAddress = match msg[0] as char {
+        '\0' => {
+            if msg.len() < 4 {
+                return Err(OscError::BadPacket("Incomplete message address."));
+            }
+            cursor.seek(SeekFrom::Current(4)).unwrap();
+            OscAddress::Int(msg[3] as u32)
+        }
+        _ => OscAddress::String(read_osc_string(&mut cursor)?),
+    };
+
     let type_tags: String = read_osc_string(&mut cursor)?;
 
     if type_tags.len() > 1 {

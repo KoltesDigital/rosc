@@ -1,12 +1,12 @@
-extern crate rosc;
+extern crate rosc_supercollider;
 
-use rosc::{decoder, encoder};
-use rosc::{OscArray, OscBundle, OscColor, OscMessage, OscMidiMessage, OscPacket, OscType};
+use rosc_supercollider::{decoder, encoder};
+use rosc_supercollider::{OscAddress, OscArray, OscBundle, OscColor, OscMessage, OscMidiMessage, OscPacket, OscType};
 
 #[test]
 fn test_encode_message_wo_args() {
     let msg_packet = OscPacket::Message(OscMessage {
-        addr: "/some/addr".to_string(),
+        addr: OscAddress::String("/some/addr".to_string()),
         args: None,
     });
 
@@ -29,7 +29,7 @@ fn test_encode_message_wo_args() {
 #[test]
 fn test_encode_message_with_args() {
     let msg_packet = OscPacket::Message(OscMessage {
-        addr: "/another/address/1".to_string(),
+        addr: OscAddress::String("/another/address/1".to_string()),
         args: Some(vec![
             4i32.into(),
             42i64.into(),
@@ -91,22 +91,22 @@ fn test_encode_message_with_args() {
 #[test]
 fn test_encode_bundle() {
     let msg0 = OscMessage {
-        addr: "/view/1".to_string(),
+        addr: OscAddress::String("/view/1".to_string()),
         args: None,
     };
 
     let msg1 = OscMessage {
-        addr: "/mixer/channel/1/amp".to_string(),
+        addr: OscAddress::String("/mixer/channel/1/amp".to_string()),
         args: Some(vec![0.9f32.into()]),
     };
 
     let msg2 = OscMessage {
-        addr: "/osc/1/freq".to_string(),
+        addr: OscAddress::String("/osc/1/freq".to_string()),
         args: Some(vec![440i32.into()]),
     };
 
     let msg3 = OscMessage {
-        addr: "/osc/1/phase".to_string(),
+        addr: OscAddress::String("/osc/1/phase".to_string()),
         args: Some(vec![(-0.4f32).into()]),
     };
 

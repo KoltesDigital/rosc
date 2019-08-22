@@ -1,7 +1,7 @@
-extern crate rosc;
+extern crate rosc_supercollider;
 
-use rosc::encoder;
-use rosc::{OscMessage, OscPacket, OscType};
+use rosc_supercollider::encoder;
+use rosc_supercollider::{OscAddress, OscMessage, OscPacket, OscType};
 use std::net::{SocketAddrV4, UdpSocket};
 use std::str::FromStr;
 use std::time::Duration;
@@ -26,7 +26,7 @@ fn main() {
 
     // switch view
     let msg_buf = encoder::encode(&OscPacket::Message(OscMessage {
-        addr: "/3".to_string(),
+        addr: OscAddress::String("/3".to_string()),
         args: None,
     }))
     .unwrap();
@@ -40,14 +40,14 @@ fn main() {
         let x = 0.5 + (step_size * (i % steps) as f32).sin() / 2.0;
         let y = 0.5 + (step_size * (i % steps) as f32).cos() / 2.0;
         let mut msg_buf = encoder::encode(&OscPacket::Message(OscMessage {
-            addr: "/3/xy1".to_string(),
+            addr: OscAddress::String("/3/xy1".to_string()),
             args: Some(vec![OscType::Float(x), OscType::Float(y)]),
         }))
         .unwrap();
 
         sock.send_to(&msg_buf, to_addr).unwrap();
         msg_buf = encoder::encode(&OscPacket::Message(OscMessage {
-            addr: "/3/xy2".to_string(),
+            addr: OscAddress::String("/3/xy2".to_string()),
             args: Some(vec![OscType::Float(y), OscType::Float(x)]),
         }))
         .unwrap();

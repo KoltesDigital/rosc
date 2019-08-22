@@ -1,9 +1,9 @@
 [package]
-name = "rosc"
+name = "rosc_supercollider"
 version = "0.2.0"
-authors = ["Andreas Linz <klingt.net@gmail.com>"]
-description = "An OSC library for Rust"
-keywords = ["audio", "osc"]
+authors = ["Jonathan Giroux <giroux.jo@gmail.com>"]
+description = "An OSC library for Rust patched for SuperCollider"
+keywords = ["audio", "osc", "supercollider"]
 documentation = "https://docs.klingt.net/rustdoc/rosc"
 repository = "https://git.klingt.net/alinz/rosc"
 license = "MIT/Apache-2.0"

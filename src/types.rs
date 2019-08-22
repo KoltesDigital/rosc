@@ -99,8 +99,15 @@ pub enum OscPacket {
 /// respective values.
 #[derive(Clone, Debug, PartialEq)]
 pub struct OscMessage {
-    pub addr: String,
+    pub addr: OscAddress,
     pub args: Option<Vec<OscType>>,
+}
+
+/// SuperCollider patch: an OSC Address can be either a string or an int!
+#[derive(Clone, Debug, PartialEq)]
+pub enum OscAddress {
+    Int(u32),
+    String(String),
 }
 
 /// An OSC bundle contains zero or more OSC packets
@@ -132,7 +139,7 @@ pub type Result<T> = result::Result<T, errors::OscError>;
 impl From<String> for OscMessage {
     fn from(s: String) -> OscMessage {
         OscMessage {
-            addr: s,
+            addr: OscAddress::String(s),
             args: None,
         }
     }
@@ -140,8 +147,17 @@ impl From<String> for OscMessage {
 impl<'a> From<&'a str> for OscMessage {
     fn from(s: &str) -> OscMessage {
         OscMessage {
-            addr: s.to_string(),
+            addr: OscAddress::String(s.to_string()),
             args: None,
+        }
+    }
+}
+
+impl std::fmt::Display for OscAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match *self {
+            OscAddress::Int(i) => write!(f, "{}", i),
+            OscAddress::String(ref s) => write!(f, "\"{}\"", s),
         }
     }
 }
