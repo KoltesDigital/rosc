@@ -31,7 +31,7 @@ fn encode_message(msg: &OscMessage) -> Result<Vec<u8>> {
     let mut msg_bytes: Vec<u8> = Vec::new();
 
     match msg.addr {
-        OscAddress::Int(i) => msg_bytes.extend(vec![0, 0, 0, i as u8]),
+        OscAddress::Int(i) => msg_bytes.extend(vec![0, 0, 0, i]),
         OscAddress::String(ref s) => msg_bytes.extend(encode_string(s.clone())),
     }
 

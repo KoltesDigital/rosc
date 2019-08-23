@@ -106,7 +106,7 @@ pub struct OscMessage {
 /// SuperCollider patch: an OSC Address can be either a string or an int!
 #[derive(Clone, Debug, PartialEq)]
 pub enum OscAddress {
-    Int(u32),
+    Int(u8),
     String(String),
 }
 

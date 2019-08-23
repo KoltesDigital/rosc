@@ -36,7 +36,7 @@ fn decode_message(msg: &[u8]) -> Result<OscPacket> {
                 return Err(OscError::BadPacket("Incomplete message address."));
             }
             cursor.seek(SeekFrom::Current(4)).unwrap();
-            OscAddress::Int(msg[3] as u32)
+            OscAddress::Int(msg[3])
         }
         _ => OscAddress::String(read_osc_string(&mut cursor)?),
     };

@@ -116,9 +116,9 @@ fn test_decode_string_address_args() {
 #[test]
 fn test_decode_int_address_no_args() {
     // \x00\x00\x00\x2a,
-    let addr: u32 = 42;
+    let addr: u8 = 42;
     let type_tags = encoder::encode_string(",");
-    let merged: Vec<u8> = vec![0, 0, 0, addr as u8]
+    let merged: Vec<u8> = vec![0, 0, 0, addr]
         .into_iter()
         .chain(type_tags.into_iter())
         .collect();
@@ -138,7 +138,7 @@ fn test_decode_int_address_no_args() {
 fn test_decode_int_address_args() {
     // \x00\x00\x00\x2a,fdih 3.1415 3.14159265359 12345678i32
     // -1234567891011
-    let addr: u32 = 42;
+    let addr: u8 = 42;
     // args
     let f = 3.1415f32;
     let mut f_bytes: [u8; 4] = [0u8; 4];
@@ -188,7 +188,7 @@ fn test_decode_int_address_args() {
         .map(|x| *x)
         .collect::<Vec<u8>>();
 
-    let merged: Vec<u8> = vec![0, 0, 0, addr as u8]
+    let merged: Vec<u8> = vec![0, 0, 0, addr]
         .into_iter()
         .chain(type_tags.into_iter())
         .chain(args)
